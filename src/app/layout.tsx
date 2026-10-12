@@ -2,8 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://freakyfit.truemindlabs.com"),
   title: "FreakyFit - Turn Workout Reels into Real Routines",
   description: "Stop using messy saved folders, FreakyFit helps you organize workouts into clean routines.",
+  alternates: {
+    canonical: "https://freakyfit.truemindlabs.com",
+  },
+  openGraph: {
+    title: "FreakyFit - Turn Workout Reels into Real Routines",
+    description: "Stop using messy saved folders, FreakyFit helps you organize workouts into clean routines.",
+    url: "https://freakyfit.truemindlabs.com",
+    siteName: "FreakyFit",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
