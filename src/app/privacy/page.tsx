@@ -124,8 +124,12 @@ export default function PrivacyPolicy() {
             <span className="font-display font-bold text-lg text-white">FreakyFit</span>
             <span className="text-xs text-gray-500 ml-2">Turn saved workouts into trackable routines</span>
           </div>
-          <div className="text-xs text-gray-500">
-            © 2026 FreakyFit. All rights reserved. • <Link className="hover:text-[#FF5E1A] transition-colors" href="/privacy">Privacy Policy</Link>
+          <div className="text-xs text-gray-500 flex items-center gap-2">
+            <span>© 2026 FreakyFit. All rights reserved.</span>
+            <span>•</span>
+            <Link className="hover:text-[#FF5E1A] transition-colors" href="/privacy">Privacy Policy</Link>
+            <span>•</span>
+            <Link className="hover:text-[#FF5E1A] transition-colors" href="/terms">Terms of Service</Link>
           </div>
         </div>
       </footer>
