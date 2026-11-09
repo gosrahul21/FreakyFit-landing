@@ -1,5 +1,6 @@
-import Link from 'next/link';
 import type { Metadata } from 'next';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Terms of Service - FreakyFit',
@@ -7,41 +8,27 @@ export const metadata: Metadata = {
 };
 
 export default function TermsOfService() {
-  return (
-    <div className="min-h-screen bg-brand-dark text-gray-300 font-sans selection:bg-brand-lime selection:text-black">
-      {/* HEADER */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5 transition-all">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-brand-surface border border-brand-borderLime flex items-center justify-center p-1 shadow-[0_0_15px_rgba(255,94,26,0.25)] group-hover:border-brand-lime transition-colors">
-              <img src="/logo.svg" alt="FreakyFit Logo" className="w-full h-auto object-contain" />
-            </div>
-            <span className="font-display font-black text-2xl tracking-tight text-white">
-              Freaky<span className="text-[#FF5E1A]">Fit</span>
-            </span>
-          </Link>
+  const envTheme = (
+    process.env.NEXT_PUBLIC_THEME ||
+    process.env.THEME ||
+    "dark"
+  ).toLowerCase();
+  const defaultTheme = envTheme === "light" ? "light" : "dark";
 
-          <div className="flex items-center gap-4 text-sm font-medium">
-            <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-              Home
-            </Link>
-            <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-              Privacy Policy
-            </Link>
-          </div>
-        </div>
-      </header>
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-brand-dark text-slate-700 dark:text-gray-300 font-sans selection:bg-[#FF5E1A] selection:text-white dark:selection:bg-brand-lime dark:selection:text-black">
+      <Navbar defaultTheme={defaultTheme} />
 
       {/* CONTENT */}
       <main className="pt-32 pb-24 px-6 max-w-4xl mx-auto">
-        <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-white/10 shadow-2xl relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#FF5E1A]/5 to-brand-lime/5 rounded-3xl pointer-events-none"></div>
+        <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-xl dark:shadow-2xl relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#FF5E1A]/5 to-orange-400/5 dark:to-brand-lime/5 rounded-3xl pointer-events-none"></div>
 
           <div className="relative z-10">
-            <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-white mb-4">Terms of Service</h1>
-            <p className="text-gray-400 font-medium mb-10">Effective date: October 10, 2026</p>
+            <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-slate-900 dark:text-white mb-4">Terms of Service</h1>
+            <p className="text-slate-500 dark:text-gray-400 font-medium mb-10">Effective date: October 10, 2026</p>
 
-            <div className="space-y-8 text-sm sm:text-base leading-relaxed text-gray-300">
+            <div className="space-y-8 text-sm sm:text-base leading-relaxed text-slate-600 dark:text-gray-300">
               <p>
                 Welcome to FreakyFit. These Terms of Service (&quot;Terms&quot;) govern your access to and use of the FreakyFit mobile application, website, and related services (collectively, the &quot;Service&quot;), operated by Truemind Labs (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;).
               </p>
@@ -50,19 +37,19 @@ export default function TermsOfService() {
               </p>
 
               {/* MEDICAL DISCLAIMER CALLOUT */}
-              <div className="p-6 rounded-2xl bg-[#FF5E1A]/10 border border-[#FF5E1A]/30 text-white">
+              <div className="p-6 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-slate-900 dark:text-white">
                 <div className="flex items-center gap-2 font-display font-bold text-lg text-[#FF5E1A] mb-2">
                   <span>⚠️</span>
                   <h2>IMPORTANT HEALTH & MEDICAL DISCLAIMER</h2>
                 </div>
-                <p className="text-sm leading-relaxed text-gray-200">
+                <p className="text-sm leading-relaxed text-slate-700 dark:text-gray-200">
                   FreakyFit is an organizational, educational, and fitness tracking tool. We are not a medical healthcare organization, and our workouts, routines, and AI exercise recommendations do not constitute medical advice, diagnosis, or treatment. 
                   Always consult a qualified physician before starting any diet or exercise program. If you experience faintness, dizziness, shortness of breath, or physical pain during any workout, discontinue immediately and seek medical attention. You perform all exercises at your own risk.
                 </p>
               </div>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">1. Eligibility & User Accounts</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">1. Eligibility & User Accounts</h2>
                 <p className="mb-2">To use FreakyFit, you represent and warrant that:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>You are at least 13 years of age (or the age of legal majority in your jurisdiction).</li>
@@ -73,7 +60,7 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">2. Social Video Import & AI Extraction</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">2. Social Video Import & AI Extraction</h2>
                 <p className="mb-2">
                   FreakyFit offers smart import features allowing you to paste publicly accessible social media links (e.g., YouTube, TikTok, Instagram Reels) to extract workouts, exercises, timestamps, and routine notes.
                 </p>
@@ -85,7 +72,7 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">3. Subscriptions, In-App Purchases & Billing</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">3. Subscriptions, In-App Purchases & Billing</h2>
                 <p className="mb-2">
                   FreakyFit may offer premium subscriptions (&quot;FreakyFit Pro&quot;) providing access to unlimited AI imports, advanced mesocycle planners, and progressive overload telemetry.
                 </p>
@@ -98,7 +85,7 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">4. Intellectual Property Rights</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">4. Intellectual Property Rights</h2>
                 <p className="mb-2">
                   The Service, including its design, branding, logo, code, features, algorithms, and interfaces, is owned by Truemind Labs and is protected by copyright, trademark, and other applicable intellectual property laws.
                 </p>
@@ -108,7 +95,7 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">5. User Content & Data</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">5. User Content & Data</h2>
                 <p className="mb-2">
                   You retain ownership of the data, custom workouts, notes, and training logs you create (&quot;User Content&quot;).
                 </p>
@@ -118,7 +105,7 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">6. Prohibited Conduct</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">6. Prohibited Conduct</h2>
                 <p className="mb-2">You agree not to:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Decompile, reverse engineer, or attempt to extract source code from FreakyFit.</li>
@@ -129,7 +116,7 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">7. Disclaimers & Limitation of Liability</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">7. Disclaimers & Limitation of Liability</h2>
                 <p className="mb-2">
                   THE SERVICE IS PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
                 </p>
@@ -139,28 +126,28 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">8. Termination</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">8. Termination</h2>
                 <p>
                   We reserve the right to suspend or terminate your access to the Service at our sole discretion, without prior notice, if you breach these Terms or engage in fraudulent or unlawful activities.
                 </p>
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">9. Governing Law & Dispute Resolution</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">9. Governing Law & Dispute Resolution</h2>
                 <p>
                   These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Truemind Labs operates, without regard to conflict of law principles.
                 </p>
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">10. Modifications to Terms</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">10. Modifications to Terms</h2>
                 <p>
                   We may revise these Terms from time to time. When changes are made, we will update the &quot;Effective date&quot; at the top of this page. Your continued use of the Service following posted changes constitutes your acceptance of the new Terms.
                 </p>
               </section>
 
               <section>
-                <h2 className="font-display font-bold text-xl text-white mb-3">11. Contact Information</h2>
+                <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-3">11. Contact Information</h2>
                 <p className="mb-2">If you have questions, concerns, or legal inquiries regarding these Terms, please reach out to us:</p>
                 <ul className="space-y-1">
                   <li><strong>App:</strong> FreakyFit</li>
@@ -174,24 +161,7 @@ export default function TermsOfService() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/5 py-12 glass-panel mt-12">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-brand-surface border border-brand-borderLime flex items-center justify-center p-1">
-              <img src="/logo.svg" alt="FreakyFit Logo" className="w-full h-auto object-contain" />
-            </div>
-            <span className="font-display font-bold text-lg text-white">FreakyFit</span>
-            <span className="text-xs text-gray-500 ml-2">Turn saved workouts into trackable routines</span>
-          </div>
-          <div className="text-xs text-gray-500 flex items-center gap-2">
-            <span>© 2026 FreakyFit. All rights reserved.</span>
-            <span>•</span>
-            <Link className="hover:text-[#FF5E1A] transition-colors" href="/privacy">Privacy Policy</Link>
-            <span>•</span>
-            <Link className="hover:text-[#FF5E1A] transition-colors" href="/terms">Terms of Service</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

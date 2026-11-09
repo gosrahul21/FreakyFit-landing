@@ -27,7 +27,6 @@ export default function WebGLBackground() {
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     if (!gl) return;
     
-    // cast to WebGLRenderingContext explicitly
     const glCtx = gl as WebGLRenderingContext;
 
     const vs = `attribute vec2 a_position;
@@ -36,23 +35,23 @@ void main() {
   v_texCoord = a_position * 0.5 + 0.5;
   gl_Position = vec4(a_position, 0.0, 1.0);
 }`;
-    const fs = `// Dynamic ambient kinetic energy field for FreakyFit hero section
-precision highp float;
+
+    const fs = `precision highp float;
 
 uniform float u_time;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
+uniform float u_theme;
 
-// Simplex-style 2D noise helper
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
 
 float snoise(vec2 v) {
-    const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
-                        0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
-                        -0.577350269189626, // -1.0 + 2.0 * C.x
-                        0.024390243902439); // 1.0 / 41.0
+    const vec4 C = vec4(0.211324865405187,
+                        0.366025403784439,
+                        -0.577350269189626,
+                        0.024390243902439);
     vec2 i  = floor(v + dot(v, C.yy) );
     vec2 x0 = v -   i + dot(i, C.xx);
     vec2 i1;
@@ -83,52 +82,57 @@ void main() {
         mouse = vec2(0.5, 0.5);
     }
     
-    // Centered coordinates aspect ratio corrected
     vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.y, u_resolution.x);
-    
     float t = u_time * 0.35;
     
-    // Flow distortion
     float n1 = snoise(p * 2.2 + vec2(t * 0.2, -t * 0.15));
     float n2 = snoise(p * 4.0 - vec2(t * 0.1, t * 0.3) + n1 * 0.5);
     
-    // Interactive mouse pulse
     vec2 mouseP = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.y, u_resolution.x);
     float distMouse = length(p - mouseP);
     float mouseWave = sin(distMouse * 14.0 - u_time * 2.5) * exp(-distMouse * 2.8) * 0.25;
 
-    // Organic kinetic energy waves
     float field = sin(p.x * 3.5 + n1 * 1.5 + t) * cos(p.y * 3.0 + n2 * 1.2 - t * 0.8);
     field += mouseWave;
 
-    // Core Brand Colors:
-    vec3 cBg = vec3(0.043, 0.059, 0.055);
-    vec3 cDarkEmerald = vec3(0.063, 0.141, 0.102);
-    vec3 cTealGlow = vec3(0.09, 0.26, 0.19);
-    vec3 cElectricLime = vec3(0.768, 0.972, 0.165);
+    // Dark Mode Palette
+    vec3 cBgDark = vec3(0.043, 0.059, 0.055);
+    vec3 cDarkEmeraldDark = vec3(0.063, 0.141, 0.102);
+    vec3 cTealGlowDark = vec3(0.09, 0.26, 0.19);
+    vec3 cAccentDark = vec3(0.768, 0.972, 0.165);
 
-    // Layered color blend
+    // Light Mode Palette
+    vec3 cBgLight = vec3(0.972, 0.98, 0.988);
+    vec3 cDarkEmeraldLight = vec3(0.93, 0.95, 0.98);
+    vec3 cTealGlowLight = vec3(1.0, 0.92, 0.86);
+    vec3 cAccentLight = vec3(1.0, 0.42, 0.12);
+
+    vec3 cBg = mix(cBgDark, cBgLight, u_theme);
+    vec3 cDarkEmerald = mix(cDarkEmeraldDark, cDarkEmeraldLight, u_theme);
+    vec3 cTealGlow = mix(cTealGlowDark, cTealGlowLight, u_theme);
+    vec3 cAccent = mix(cAccentDark, cAccentLight, u_theme);
+
     float glowMask = smoothstep(-0.4, 0.9, field);
-    vec3 col = mix(cBg, cDarkEmerald, glowMask * 0.7);
+    vec3 col = mix(cBg, cDarkEmerald, glowMask * (u_theme > 0.5 ? 0.45 : 0.7));
     
-    // Bright energetic ribbons / pulse lines
     float ribbon = pow(max(0.0, sin(p.y * 5.0 + n2 * 3.0 + t * 0.7)), 8.0);
-    col = mix(col, cTealGlow, ribbon * 0.6);
+    col = mix(col, cTealGlow, ribbon * (u_theme > 0.5 ? 0.35 : 0.6));
 
-    // Highlight contour lines with electric lime
     float lineGlow = smoothstep(0.85, 0.98, sin(n1 * 4.0 + p.x * 2.0 + t));
-    col += cElectricLime * lineGlow * 0.28 * (1.0 - length(p * 0.8));
+    col += cAccent * lineGlow * (u_theme > 0.5 ? 0.14 : 0.28) * (1.0 - length(p * 0.8));
 
-    // Vignette towards edges so content remains crisp and legible
     float vignette = 1.0 - smoothstep(0.4, 1.4, length(p));
-    col *= (vignette * 0.85 + 0.15);
-
-    // Subtle film grain
-    float grain = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) * 0.02;
-    col += vec3(grain);
+    if (u_theme > 0.5) {
+      col = mix(cBgLight, col, vignette * 0.7 + 0.3);
+    } else {
+      col *= (vignette * 0.85 + 0.15);
+      float grain = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) * 0.02;
+      col += vec3(grain);
+    }
 
     gl_FragColor = vec4(col, 1.0);
 }`;
+
     function cs(type: number, src: string) {
       const s = glCtx.createShader(type);
       if(!s) return null;
@@ -156,8 +160,9 @@ void main() {
     const uTime = glCtx.getUniformLocation(prog, 'u_time');
     const uRes = glCtx.getUniformLocation(prog, 'u_resolution');
     const uMouse = glCtx.getUniformLocation(prog, 'u_mouse');
+    const uTheme = glCtx.getUniformLocation(prog, 'u_theme');
 
-    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+    const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
     
     const onMouseMove = (event: MouseEvent) => {
       if (!canvas) return;
@@ -179,6 +184,10 @@ void main() {
       if (uTime) glCtx.uniform1f(uTime, t * 0.001);
       if (uRes) glCtx.uniform2f(uRes, canvas.width, canvas.height);
       if (uMouse) glCtx.uniform2f(uMouse, mouse.x, mouse.y);
+      if (uTheme) {
+        const isLight = document.documentElement.classList.contains('light');
+        glCtx.uniform1f(uTheme, isLight ? 1.0 : 0.0);
+      }
       glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4);
       animationId = requestAnimationFrame(render);
     }
