@@ -4,3 +4,4 @@ export const PLAYSTORE_LINK =
 
 export const APPSTORE_LINK =
   process.env.NEXT_PUBLIC_APPSTORE_LINK?.trim() || "/app-store";
+
