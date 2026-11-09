@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
 
 interface MobileAppInstallPopupProps {
@@ -96,16 +97,19 @@ export default function MobileAppInstallPopup({
 
         {/* App Store & Google Play SVG Badges */}
         <div className="flex flex-wrap items-center gap-2.5 justify-center">
-          <a
+          <Link
             href={APPSTORE_LINK}
             className="inline-block transition-transform active:scale-95 shadow-sm rounded-lg"
+            {...(APPSTORE_LINK.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
           >
             <img
               src="/app-store.svg"
               alt="Download on the App Store"
               className="h-9 w-auto object-contain rounded-lg"
             />
-          </a>
+          </Link>
 
           <a
             href={PLAYSTORE_LINK}

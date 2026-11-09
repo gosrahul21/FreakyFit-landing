@@ -43,12 +43,15 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a
+                <Link
                   href={APPSTORE_LINK}
                   className="hover:text-[#FF5E1A] transition-colors"
+                  {...(APPSTORE_LINK.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                 >
                   iOS App
-                </a>
+                </Link>
               </li>
               <li>
                 <a

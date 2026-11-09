@@ -305,9 +305,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </p>
 
               <div className="flex flex-wrap items-center gap-3">
-                <a
+                <Link
                   href={APPSTORE_LINK}
                   className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-md rounded-xl"
+                  {...(APPSTORE_LINK.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -315,7 +318,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     alt="Download on the App Store"
                     className="h-10 sm:h-11 w-auto object-contain rounded-xl"
                   />
-                </a>
+                </Link>
 
                 <a
                   href={PLAYSTORE_LINK}

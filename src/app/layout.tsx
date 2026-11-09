@@ -8,6 +8,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://freakyfit.truemindlabs.com",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     title: "FreakyFit - Turn Workout Reels into Real Routines",
     description: "Stop using messy saved folders, FreakyFit helps you organize workouts into clean routines.",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
 
 interface AppInstallCardProps {
@@ -38,9 +39,12 @@ export default function AppInstallCard({
 
         {/* Official Store SVG Badges */}
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          <a
+          <Link
             href={APPSTORE_LINK}
             className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-sm rounded-lg"
+            {...(APPSTORE_LINK.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -48,7 +52,7 @@ export default function AppInstallCard({
               alt="Download on the App Store"
               className={compact ? "h-8 sm:h-8.5 w-auto object-contain rounded-lg" : "h-9 w-auto object-contain rounded-lg"}
             />
-          </a>
+          </Link>
 
           <a
             href={PLAYSTORE_LINK}
