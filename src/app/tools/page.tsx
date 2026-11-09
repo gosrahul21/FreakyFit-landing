@@ -56,7 +56,7 @@ export default function ToolsDirectory() {
   const envTheme = (
     process.env.NEXT_PUBLIC_THEME ||
     process.env.THEME ||
-    "dark"
+    "light"
   ).toLowerCase();
   const defaultTheme = envTheme === "light" ? "light" : "dark";
 

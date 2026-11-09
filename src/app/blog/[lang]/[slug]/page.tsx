@@ -9,6 +9,7 @@ import TableOfContents, { TOCItem } from "@/components/TableOfContents";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
 import MobileAppInstallPopup from "@/components/MobileAppInstallPopup";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/sanity";
+import { Language } from "@/constants/lang.enum";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -20,19 +21,20 @@ interface BlogPostPageProps {
 export const instant = false;
 
 export function generateStaticParams() {
-  return [
-    { lang: "en", slug: "why-dumbbells-alone-are-sufficient" },
-    { lang: "hi", slug: "why-dumbbells-alone-are-sufficient" },
-    { lang: "en", slug: "turn-workout-reels-into-training-split" },
-    { lang: "hi", slug: "turn-workout-reels-into-training-split" },
+  const popularSlugs = [
+    "why-dumbbells-alone-are-sufficient",
+    "turn-workout-reels-into-training-split",
   ];
+  return Object.values(Language).flatMap((lang) =>
+    popularSlugs.map((slug) => ({ lang, slug }))
+  );
 }
 
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
   const { lang, slug } = await params;
-  const currentLang = (lang === "hi" ? "hi" : "en") as "en" | "hi";
+  const currentLang = lang;
   const post = await getBlogPostBySlug(slug, currentLang);
 
   if (!post) {
@@ -46,10 +48,12 @@ export async function generateMetadata({
     description: post.excerpt,
     alternates: {
       canonical: `https://freakyfit.truemindlabs.com/blog/${currentLang}/${post.slug}`,
-      languages: {
-        en: `https://freakyfit.truemindlabs.com/blog/en/${post.slug}`,
-        hi: `https://freakyfit.truemindlabs.com/blog/hi/${post.slug}`,
-      },
+      languages: Object.fromEntries(
+        Object.values(Language).map((l) => [
+          l,
+          `https://freakyfit.truemindlabs.com/blog/${l}/${post.slug}`,
+        ])
+      ),
     },
     openGraph: {
       title: post.title,
@@ -65,7 +69,7 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { lang, slug } = await params;
-  const currentLang = (lang === "hi" ? "hi" : "en") as "en" | "hi";
+  const currentLang = lang;
   const post = await getBlogPostBySlug(slug, currentLang);
 
   if (!post) {
@@ -78,7 +82,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const envTheme = (
     process.env.NEXT_PUBLIC_THEME ||
     process.env.THEME ||
-    "dark"
+    "light"
   ).toLowerCase();
   const defaultTheme = envTheme === "light" ? "light" : "dark";
 
@@ -129,6 +133,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const isHindi = currentLang === "hi";
+  const isTurkish = currentLang === "tr";
 
   return (
     <>
@@ -154,14 +159,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Main Article Content */}
           <article className="lg:col-span-8">
-            {/* Fallback Notice if Hindi requested but only English available in Sanity */}
-            {isHindi && post.lang === "en" && (
+            {/* Fallback Notice if non-English requested but only English available in Sanity */}
+            {currentLang !== "en" && post.lang === "en" && (
               <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 text-xs sm:text-sm flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px] text-[#FF5E1A] shrink-0">
                   translate
                 </span>
                 <span>
-                  यह लेख वर्तमान में केवल <strong>अंग्रेज़ी</strong> में उपलब्ध है। हिन्दी अनुवाद जल्द आ रहा है।
+                  {isTurkish ? (
+                    <>Bu makale şu anda yalnızca <strong>İngilizce</strong> olarak mevcuttur. Türkçe çeviri yakında gelecektir.</>
+                  ) : isHindi ? (
+                    <>यह लेख वर्तमान में केवल <strong>अंग्रेज़ी</strong> में उपलब्ध है। हिन्दी अनुवाद जल्द आ रहा है।</>
+                  ) : (
+                    <>This article is currently available in <strong>English</strong>. Localized translation is coming soon.</>
+                  )}
                 </span>
               </div>
             )}
@@ -171,7 +182,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="p-6 sm:p-8 rounded-3xl bg-white/90 dark:bg-zinc-900/80 border border-slate-200/90 dark:border-white/10 shadow-lg mb-10 relative overflow-hidden">
                 <div className="flex items-center gap-2 font-display font-black text-xs uppercase tracking-widest text-[#FF5E1A] mb-4">
                   <span className="material-symbols-outlined text-[18px]">verified</span>
-                  <span>{isHindi ? "मुख्य बिंदु और निष्कर्ष" : "Key Takeaways"}</span>
+                  <span>
+                    {isTurkish
+                      ? "Önemli Noktalar"
+                      : isHindi
+                      ? "मुख्य बिंदु और निष्कर्ष"
+                      : "Key Takeaways"}
+                  </span>
                 </div>
                 <ul className="space-y-4">
                   {post.keyTakeaways.map((item, idx) => (
@@ -295,7 +312,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {relatedPosts.length > 0 && (
               <div className="mt-16 pt-10 border-t border-slate-200/80 dark:border-white/10">
                 <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-6">
-                  {isHindi ? "संबंधित लेख" : "Related Articles"}
+                  {isTurkish
+                    ? "İlgili Makaleler"
+                    : isHindi
+                    ? "संबंधित लेख"
+                    : "Related Articles"}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {relatedPosts.map((rel) => (

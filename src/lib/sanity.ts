@@ -1,3 +1,4 @@
+import { Language } from "@/constants/lang.enum";
 import { createClient } from "@sanity/client";
 import { createImageUrlBuilder } from "@sanity/image-url";
 
@@ -23,11 +24,11 @@ export const revalidateInterval = process.env.SANITY_REVALIDATE_SECONDS
 // Create Sanity client
 export const sanityClient = projectId
   ? createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      useCdn: true,
-    })
+    projectId,
+    dataset,
+    apiVersion,
+    useCdn: true,
+  })
   : null;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,12 +55,14 @@ export interface KeyTakeaway {
   description: string;
 }
 
+export type SupportedLang = "en" | "hi" | "tr";
+
 export interface BlogPost {
   _id: string;
   title: string;
   slug: string;
-  lang: "en" | "hi" | "tr";
-  availableLangs?: ("en" | "hi" | "tr")[];
+  lang: Language | SupportedLang | string;
+  availableLangs?: (Language | SupportedLang | string)[];
   publishedAt: string;
   readingTime: string;
   category: string;
@@ -80,8 +83,8 @@ export const FALLBACK_POSTS: BlogPost[] = [
     _id: "post-1-en",
     title: "Why dumbbells alone are completely sufficient for hypertrophy",
     slug: "why-dumbbells-alone-are-sufficient",
-    lang: "en",
-    availableLangs: ["en", "hi"],
+    lang: Language.ENGLISH,
+    availableLangs: Object.values(Language),
     publishedAt: "November 6, 2026",
     readingTime: "5 min read",
     category: "Hypertrophy & Biomechanics",
@@ -153,8 +156,8 @@ Track your progression seamlessly in **FreakyFit** — extract sets, reps, and e
     _id: "post-1-hi",
     title: "मांसपेशियों के विकास (हाइपरट्रॉफी) के लिए केवल डम्बल ही काफी क्यों हैं",
     slug: "why-dumbbells-alone-are-sufficient",
-    lang: "hi",
-    availableLangs: ["en", "hi"],
+    lang: Language.HINDI,
+    availableLangs: Object.values(Language),
     publishedAt: "6 नवंबर, 2026",
     readingTime: "5 मिनट पढ़ें",
     category: "हाइपरट्रॉफी और बायोमैकेनिक्स",
@@ -207,7 +210,7 @@ Track your progression seamlessly in **FreakyFit** — extract sets, reps, and e
     title: "How to Turn Saved Workout Reels Into an Actionable Gym Split",
     slug: "turn-workout-reels-into-training-split",
     lang: "en",
-    availableLangs: ["en", "hi"],
+    availableLangs: Object.values(Language),
     publishedAt: "November 2, 2026",
     readingTime: "4 min read",
     category: "Workout Organization",
@@ -255,7 +258,7 @@ Using FreakyFit, you can paste the reel link and let the AI extract every exerci
     title: "सेव किए गए वर्कआउट रील्स को एक व्यवस्थित ट्रेनिंग प्लान में कैसे बदलें",
     slug: "turn-workout-reels-into-training-split",
     lang: "hi",
-    availableLangs: ["en", "hi"],
+    availableLangs: Object.values(Language),
     publishedAt: "2 नवंबर, 2026",
     readingTime: "4 मिनट पढ़ें",
     category: "वर्कआउट प्रबंधन",
@@ -299,7 +302,7 @@ Using FreakyFit, you can paste the reel link and let the AI extract every exerci
     title: "Hipertrofi İçin Neden Yalnızca Dambıllar Tamamen Yeterlidir?",
     slug: "why-dumbbells-alone-are-sufficient",
     lang: "tr",
-    availableLangs: ["en", "hi", "tr"],
+    availableLangs: Object.values(Language),
     publishedAt: "6 Kasım 2026",
     readingTime: "5 dk okuma",
     category: "Hipertrofi ve Biyomekanik",
@@ -352,7 +355,7 @@ Göğüs veya sırt kaslarınız direncin 5.000 dolarlık bir makineden mi yoksa
     title: "Kaydedilen Antrenman Reels Videolarını Gerçek Bir Antrenman Planına Dönüştürme",
     slug: "turn-workout-reels-into-training-split",
     lang: "tr",
-    availableLangs: ["en", "hi", "tr"],
+    availableLangs: Object.values(Language),
     publishedAt: "2 Kasım 2026",
     readingTime: "4 dk okuma",
     category: "Antrenman Organizasyonu",
@@ -395,10 +398,10 @@ FreakyFit'e herhangi bir reels bağlantısını yapıştırın; yapay zeka harek
 
 // Helper to normalize TrueMind Labs post schema into FreakyFit BlogPost format
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function normalizeSanityPost(raw: any, defaultLang: "en" | "hi" | "tr"): BlogPost {
+function normalizeSanityPost(raw: any, defaultLang: Language | string = "en"): BlogPost {
   const content = raw.content || raw.body;
-  const authorName = raw.authorName || raw.author?.name || "FreakyFit Team";
-  const authorRole = raw.author?.role || "Fitness & Biomechanics Specialist";
+  const authorName = raw.authorName || raw.author?.name || "Rael";
+  const authorRole = raw.author?.role || 'Founder';
   const cover =
     raw.coverImage?.asset?.url ||
     raw.coverImage ||
@@ -437,7 +440,12 @@ function normalizeSanityPost(raw: any, defaultLang: "en" | "hi" | "tr"): BlogPos
       (Array.isArray(raw.tags) && (raw.tags.includes("hi") || raw.tags.includes("hindi")))
     );
 
-  const postLang: "en" | "hi" | "tr" = isTurkish ? "tr" : isHindi ? "hi" : "en";
+  const rawLang = raw.language || raw.lang;
+  const postLang: string = isTurkish
+    ? "tr"
+    : isHindi
+    ? "hi"
+    : rawLang || defaultLang || "en";
 
   // Calculate rough reading time if not present
   let readingTime = raw.readingTime;
@@ -469,10 +477,10 @@ function normalizeSanityPost(raw: any, defaultLang: "en" | "hi" | "tr"): BlogPos
     lang: postLang,
     publishedAt: raw.publishedAt
       ? new Date(raw.publishedAt).toLocaleDateString(locale, {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
       : "Recent",
     readingTime,
     category,
@@ -490,16 +498,22 @@ function normalizeSanityPost(raw: any, defaultLang: "en" | "hi" | "tr"): BlogPos
   };
 }
 
-export async function getBlogPosts(lang: "en" | "hi" = "en"): Promise<BlogPost[]> {
+export async function getBlogPosts(lang: string = "en"): Promise<BlogPost[]> {
   if (sanityClient && projectId) {
     try {
       // Query TrueMind Labs multi-tenant schema:
+      // If lang == "tr", match posts ending with -tr, language == "tr", or tags containing "tr"/"turkish"/"türkçe".
       // If lang == "hi", match posts ending with -hi, language == "hi", or tags containing "hi"/"hindi".
       // If lang == "en", match base posts (default English) or posts ending with -en.
+      // For any other language code, match posts ending with -[lang], language == [lang], or [lang] in tags.
       const langFilter =
-        lang === "hi"
-          ? `(slug.current match "*-hi" || language == "hi" || lang == "hi" || "hi" in tags || "hindi" in tags)`
-          : `(!(slug.current match "*-hi") && language != "hi" && lang != "hi" && !("hi" in tags) && !("hindi" in tags))`;
+        lang === "tr"
+          ? `(slug.current match "*-tr" || language == "tr" || lang == "tr" || "tr" in tags || "turkish" in tags || "türkçe" in tags)`
+          : lang === "hi"
+            ? `(slug.current match "*-hi" || language == "hi" || lang == "hi" || "hi" in tags || "hindi" in tags)`
+            : lang === "en"
+              ? `(!(slug.current match "*-hi") && !(slug.current match "*-tr") && language != "hi" && language != "tr" && lang != "hi" && lang != "tr" && !("hi" in tags) && !("hindi" in tags) && !("tr" in tags) && !("turkish" in tags))`
+              : `(slug.current match "*-" + $lang || language == $lang || lang == $lang || $lang in tags)`;
 
       const query = `*[_type == "post" && (domainName match "freakyfit*" || domainName == "freakyfit.xyz" || domainName == $domainName || domainName == "freakyfit.truemindlabs.com" || !defined(domainName)) && ${langFilter}] | order(publishedAt desc) {
         _id,
@@ -524,35 +538,53 @@ export async function getBlogPosts(lang: "en" | "hi" = "en"): Promise<BlogPost[]
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const posts: any[] = await sanityClient.fetch(
         query,
-        { domainName },
+        { domainName, lang },
         { next: { revalidate: revalidateInterval, tags: ["blog-posts"] } }
       );
       if (posts && posts.length > 0) {
         return posts.map((p) => normalizeSanityPost(p, lang));
+      }
+
+      // If no language-specific posts found in Sanity and not English, fall back to English posts
+      if (lang !== "en") {
+        const enPosts = await getBlogPosts("en");
+        if (enPosts.length > 0) {
+          return enPosts;
+        }
       }
     } catch (err) {
       console.warn("Sanity fetch failed or not connected, using fallback blog posts:", err);
     }
   }
 
-  return FALLBACK_POSTS.filter((p) => p.lang === lang);
+  const fallbackForLang = FALLBACK_POSTS.filter((p) => p.lang === lang);
+  return fallbackForLang.length > 0
+    ? fallbackForLang
+    : FALLBACK_POSTS.filter((p) => p.lang === "en" || p.lang === Language.ENGLISH);
 }
 
 export async function getBlogPostBySlug(
   slug: string,
-  lang: "en" | "hi" = "en"
+  lang: string = "en"
 ): Promise<BlogPost | null> {
-  // Always derive clean base slug (strips -hi or -en if accidentally passed)
-  const baseSlug = slug.replace(/-hi$/, "").replace(/-en$/, "");
+  // Always derive clean base slug (strips -hi, -tr, or -en if accidentally passed)
+  const baseSlug = slug.replace(/-hi$/, "").replace(/-tr$/, "").replace(/-en$/, "");
   const localizedSlug = `${baseSlug}-${lang}`;
   const exactSlug = slug;
 
   if (sanityClient && projectId) {
     try {
-      // 1. If searching for non-English (e.g. lang == "hi"), first search for [slug]-[lang] (e.g. topic-hi)
-      // or exactSlug if it ends with -hi, or baseSlug with language == "hi"
+      // 1. If searching for non-English, search for [slug]-[lang] (e.g. topic-tr, topic-hi)
+      // or exactSlug if it ends with -lang, or baseSlug with language/tag matches
       if (lang !== "en") {
-        const localizedQuery = `*[_type == "post" && (domainName match "freakyfit*" || domainName == "freakyfit.xyz" || domainName == $domainName || domainName == "freakyfit.truemindlabs.com" || !defined(domainName)) && (slug.current == $localizedSlug || (slug.current == $exactSlug && $exactSlug match "*-hi") || (slug.current == $baseSlug && (language == "hi" || lang == "hi" || "hi" in tags || "hindi" in tags)))][0] {
+        const langTagCondition =
+          lang === "tr"
+            ? `(language == "tr" || lang == "tr" || "tr" in tags || "turkish" in tags || "türkçe" in tags)`
+            : lang === "hi"
+            ? `(language == "hi" || lang == "hi" || "hi" in tags || "hindi" in tags)`
+            : `(language == $lang || lang == $lang || $lang in tags)`;
+
+        const localizedQuery = `*[_type == "post" && (domainName match "freakyfit*" || domainName == "freakyfit.xyz" || domainName == $domainName || domainName == "freakyfit.truemindlabs.com" || !defined(domainName)) && (slug.current == $localizedSlug || (slug.current == $exactSlug && $exactSlug match "*-" + $lang) || (slug.current == $baseSlug && ${langTagCondition}))][0] {
           _id,
           title,
           slug,
@@ -627,13 +659,13 @@ export async function getBlogPostBySlug(
 
   // Fallback in-memory posts:
   if (lang !== "en") {
-    const fallbackHi = FALLBACK_POSTS.find(
+    const fallbackLocalized = FALLBACK_POSTS.find(
       (p) =>
         (p.slug === baseSlug || p.slug === localizedSlug) &&
         (p.lang === lang || p._id.endsWith(`-${lang}`))
     );
-    if (fallbackHi) {
-      return { ...fallbackHi, slug: baseSlug };
+    if (fallbackLocalized) {
+      return { ...fallbackLocalized, slug: baseSlug };
     }
   }
 

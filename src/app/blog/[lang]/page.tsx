@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AppInstallCard from "@/components/AppInstallCard";
 import MobileAppInstallPopup from "@/components/MobileAppInstallPopup";
 import { getBlogPosts } from "@/lib/sanity";
+import { Language } from "@/constants/lang.enum";
 
 interface BlogIndexProps {
   params: Promise<{
@@ -15,35 +16,44 @@ interface BlogIndexProps {
 
 export const instant = false;
 
+const VALID_LANG_CODES = new Set<string>(Object.values(Language));
+
 export function generateStaticParams() {
-  return [{ lang: "en" }, { lang: "hi" }];
+  return Object.values(Language).map((lang) => ({ lang }));
 }
 
 export async function generateMetadata({
   params,
 }: BlogIndexProps): Promise<Metadata> {
   const { lang } = await params;
-  if (lang !== "en" && lang !== "hi") {
+  if (!VALID_LANG_CODES.has(lang)) {
     return {
       title: "FreakyFit Blog",
     };
   }
 
   const isHindi = lang === "hi";
+  const isTurkish = lang === "tr";
 
   return {
-    title: isHindi
+    title: isTurkish
+      ? "FreakyFit Blog - Hipertrofi, Egzersiz Bilimi ve Antrenman Rehberi"
+      : isHindi
       ? "फ्रीकीफिट ब्लॉग - फिटनेस रूटीन और व्यायाम विज्ञान"
       : "FreakyFit Blog - Hypertrophy, Workout Organization & Fitness Science",
-    description: isHindi
+    description: isTurkish
+      ? "Fitness videolarını yapılandırılmış antrenman rutinlerine dönüştürün, hipertrofi biyomekaniği ve egzersiz fizyolojisini keşfedin."
+      : isHindi
       ? "फिटनेस रील्स को वास्तविक वर्कआउट में बदलें, व्यायाम विज्ञान और हाइपरट्रॉफी तकनीकों को समझें।"
       : "Evidence-based fitness guides, hypertrophy biomechanics, and guides on transforming social media workout reels into structured routines.",
     alternates: {
       canonical: `https://freakyfit.truemindlabs.com/blog/${lang}`,
-      languages: {
-        en: "https://freakyfit.truemindlabs.com/blog/en",
-        hi: "https://freakyfit.truemindlabs.com/blog/hi",
-      },
+      languages: Object.fromEntries(
+        Object.values(Language).map((l) => [
+          l,
+          `https://freakyfit.truemindlabs.com/blog/${l}`,
+        ])
+      ),
     },
   };
 }
@@ -52,21 +62,22 @@ export default async function BlogIndexPage({ params }: BlogIndexProps) {
   const { lang } = await params;
 
   // If a user navigates to /blog/[topic] directly, default to English post /blog/en/[topic]
-  if (lang !== "en" && lang !== "hi") {
+  if (!VALID_LANG_CODES.has(lang)) {
     redirect(`/blog/en/${lang}`);
   }
 
-  const currentLang = (lang === "hi" ? "hi" : "en") as "en" | "hi";
+  const currentLang = lang;
   const posts = await getBlogPosts(currentLang);
 
   const envTheme = (
     process.env.NEXT_PUBLIC_THEME ||
     process.env.THEME ||
-    "dark"
+    "light"
   ).toLowerCase();
   const defaultTheme = envTheme === "light" ? "light" : "dark";
 
   const isHindi = currentLang === "hi";
+  const isTurkish = currentLang === "tr";
 
   return (
     <>
@@ -79,18 +90,26 @@ export default async function BlogIndexPage({ params }: BlogIndexProps) {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FF5E1A]/10 border border-[#FF5E1A]/30 mb-4">
             <span className="material-symbols-outlined text-[16px] text-[#FF5E1A]">menu_book</span>
             <span className="font-display font-bold text-xs uppercase tracking-wider text-[#FF5E1A]">
-              {isHindi ? "फ्रीकीफिट व्यायाम ज्ञानकोष" : "FreakyFit Training Chronicles"}
+              {isTurkish
+                ? "FreakyFit Antrenman Günlüğü"
+                : isHindi
+                ? "फ्रीकीफिट व्यायाम ज्ञानकोष"
+                : "FreakyFit Training Chronicles"}
             </span>
           </div>
 
           <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-slate-900 dark:text-white tracking-tight leading-tight mb-4">
-            {isHindi
+            {isTurkish
+              ? "Hipertrofi ve Antrenman Bilimi"
+              : isHindi
               ? "साइंटिफिक फिटनेस और वर्कआउट गाइड"
               : "Hypertrophy & Training Science"}
           </h1>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-gray-300 leading-relaxed">
-            {isHindi
+            {isTurkish
+              ? "Pratik biyomekanik, egzersiz fizyolojisi ve kaydedilen dağınık fitness videolarını kalıcı gelişime dönüştürme rehberi."
+              : isHindi
               ? "व्यायाम शरीर विज्ञान, सोशल मीडिया रील्स को व्यवस्थित करने की रणनीतियाँ और मांसपेशियों के विकास पर आधारित प्रामाणिक लेख।"
               : "Practical biomechanics, exercise physiology, and frameworks for turning chaotic saved workout folders into lifelong progress."}
           </p>
@@ -162,7 +181,13 @@ export default async function BlogIndexPage({ params }: BlogIndexProps) {
                       href={`/blog/${currentLang}/${post.slug}`}
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-[#FF5E1A] hover:underline"
                     >
-                      <span>{isHindi ? "पूरा लेख पढ़ें" : "Read Article"}</span>
+                      <span>
+                        {isTurkish
+                          ? "Makaleyi Oku"
+                          : isHindi
+                          ? "पूरा लेख पढ़ें"
+                          : "Read Article"}
+                      </span>
                       <span className="material-symbols-outlined text-[16px] transform group-hover:translate-x-1 transition-transform">
                         arrow_forward
                       </span>

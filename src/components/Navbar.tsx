@@ -6,7 +6,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 interface NavbarProps {
-  currentLang?: "en" | "hi" | "tr";
+  currentLang?: string;
   slug?: string;
   defaultTheme?: "light" | "dark";
 }

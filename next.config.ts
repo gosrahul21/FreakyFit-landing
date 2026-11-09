@@ -31,16 +31,31 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_THEME: configuredTheme,
   },
   async rewrites() {
-    return [
-      {
-        source: "/hi/:slug*",
-        destination: "/blog/hi/:slug*",
-      },
-      {
-        source: "/en/:slug*",
-        destination: "/blog/en/:slug*",
-      },
+    const langCodes = [
+      "hi",
+      "en",
+      "tr",
+      "ru",
+      "nl",
+      "de",
+      "fr",
+      "es",
+      "it",
+      "pt",
+      "ar",
+      "kr",
+      "zh",
+      "ja",
+      "pl",
+      "sv",
+      "fi",
+      "no",
+      "el",
     ];
+    return langCodes.map((code) => ({
+      source: `/${code}/:slug*`,
+      destination: `/blog/${code}/:slug*`,
+    }));
   },
   turbopack: {
     rules: {
