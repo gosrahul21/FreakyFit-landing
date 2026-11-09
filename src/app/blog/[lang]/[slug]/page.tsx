@@ -10,6 +10,7 @@ import ReadingProgressBar from "@/components/ReadingProgressBar";
 import MobileAppInstallPopup from "@/components/MobileAppInstallPopup";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/sanity";
 import { Language } from "@/constants/lang.enum";
+import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -305,9 +306,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
               <div className="flex flex-wrap items-center gap-3">
                 <a
-                  href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={APPSTORE_LINK}
                   className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-md rounded-xl"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -319,7 +318,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </a>
 
                 <a
-                  href="https://play.google.com/store/apps/details?id=com.freakyfit.app"
+                  href={PLAYSTORE_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-md rounded-xl"

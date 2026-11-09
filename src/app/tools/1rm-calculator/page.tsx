@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AppInstallCard from "@/components/AppInstallCard";
 import MobileAppInstallPopup from "@/components/MobileAppInstallPopup";
+import { PLAYSTORE_LINK } from "@/constants/links";
 
 export default function OneRepMaxCalculator() {
   const [weight, setWeight] = useState<number>(100);
@@ -156,7 +157,7 @@ export default function OneRepMaxCalculator() {
                 </div>
 
                 <a
-                  href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
+                  href={PLAYSTORE_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3.5 rounded-full bg-[#FF5E1A] text-white font-display font-bold text-sm hover:opacity-90 transition-all shrink-0 shadow-lg shadow-[#FF5E1A]/25"

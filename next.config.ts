@@ -52,10 +52,16 @@ const nextConfig: NextConfig = {
       "no",
       "el",
     ];
-    return langCodes.map((code) => ({
-      source: `/${code}/:slug*`,
-      destination: `/blog/${code}/:slug*`,
-    }));
+    return [
+      {
+        source: "/ios",
+        destination: "/app-store",
+      },
+      ...langCodes.map((code) => ({
+        source: `/${code}/:slug*`,
+        destination: `/blog/${code}/:slug*`,
+      })),
+    ];
   },
   turbopack: {
     rules: {

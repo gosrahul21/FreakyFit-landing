@@ -39,9 +39,7 @@ export default function AppInstallCard({
         {/* Official Store SVG Badges */}
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <a
-            href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={APPSTORE_LINK}
             className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-sm rounded-lg"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -53,7 +51,7 @@ export default function AppInstallCard({
           </a>
 
           <a
-            href="https://play.google.com/store/apps/details?id=com.freakyfit.app"
+            href={PLAYSTORE_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-sm rounded-lg"

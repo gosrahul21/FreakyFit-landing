@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
 
 interface MobileAppInstallPopupProps {
   delayMs?: number;
@@ -96,9 +97,7 @@ export default function MobileAppInstallPopup({
         {/* App Store & Google Play SVG Badges */}
         <div className="flex flex-wrap items-center gap-2.5 justify-center">
           <a
-            href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={APPSTORE_LINK}
             className="inline-block transition-transform active:scale-95 shadow-sm rounded-lg"
           >
             <img
@@ -109,7 +108,7 @@ export default function MobileAppInstallPopup({
           </a>
 
           <a
-            href="https://play.google.com/store/apps/details?id=com.freakyfit.app"
+            href={PLAYSTORE_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block transition-transform active:scale-95 shadow-sm rounded-lg"

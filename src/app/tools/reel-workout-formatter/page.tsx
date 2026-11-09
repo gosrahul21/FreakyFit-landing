@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AppInstallCard from "@/components/AppInstallCard";
 import MobileAppInstallPopup from "@/components/MobileAppInstallPopup";
+import { PLAYSTORE_LINK } from "@/constants/links";
 
 interface ParsedExercise {
   name: string;
@@ -284,7 +285,7 @@ export default function ReelWorkoutFormatter() {
                       </div>
                     </div>
                     <a
-                      href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
+                      href={PLAYSTORE_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 rounded-full bg-[#FF5E1A] text-white font-display font-bold text-xs hover:opacity-90 shrink-0"
