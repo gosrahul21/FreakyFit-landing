@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
 
 interface AppInstallCardProps {
   headline?: string;
@@ -16,7 +17,7 @@ export default function AppInstallCard({
   const [showQR, setShowQR] = useState(false);
 
   return (
-    <div className="w-full">
+    <div className="w-full sticky top-0">
       <div className={`glass-panel rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-lg dark:shadow-xl overflow-hidden relative group ${
         compact ? "p-4 sm:p-5" : "p-6 sm:p-7 rounded-3xl"
       }`}>
@@ -24,7 +25,7 @@ export default function AppInstallCard({
         <div className="w-8 h-1 bg-gradient-to-r from-[#FF5E1A] to-amber-500 rounded-full mb-3"></div>
 
         <h3 className={`font-display font-black text-slate-900 dark:text-white tracking-tight ${
-          compact ? "text-base sm:text-lg leading-tight mb-2" : "text-xl sm:text-2xl leading-snug mb-3"
+          compact ? "text-base sm:text-2xl leading-tight mb-2" : "text-xl sm:text-4xl leading-snug mb-3"
         }`}>
           {headline}
         </h3>

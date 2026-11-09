@@ -214,27 +214,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </h1>
 
               {/* Author & Meta Row */}
-              <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-slate-200/80 dark:border-white/10 text-xs text-slate-500 dark:text-gray-400">
+              <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-b border-slate-200/80 dark:border-white/10 text-xs text-slate-500 dark:text-gray-400">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#FF5E1A]/10 text-[#FF5E1A] font-bold text-xs flex items-center justify-center border border-[#FF5E1A]/30">
+                  {/* <div className="w-10 h-10 rounded-full bg-[#FF5E1A]/10 text-[#FF5E1A] font-bold text-xs flex items-center justify-center border border-[#FF5E1A]/30">
                     {post.author.name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
-                  </div>
-                  <div>
-                    <span className="font-bold text-slate-900 dark:text-white block text-sm">
-                      {post.author.name}
-                    </span>
-                    <span>{post.author.role}</span>
-                  </div>
-                </div>
+                  </div> */}
 
-                <div className="flex items-center gap-3">
+                                  <div className="flex items-center gap-3">
                   <span>{post.publishedAt}</span>
                   <span>•</span>
                   <span>{post.readingTime}</span>
                 </div>
+                  <div>
+                    {/* <span className="font-bold text-slate-900 dark:text-white block text-sm">
+                      {post.author.name}
+                    </span> */}
+                    {/* <span>{post.author.role}</span> */}
+                  </div>
+                </div>
+
+                {/* <div className="flex items-center gap-3">
+                  <span>{post.publishedAt}</span>
+                  <span>•</span>
+                  <span>{post.readingTime}</span>
+                </div> */}
               </div>
             </header>
 
@@ -287,37 +293,65 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               />
             </div>
 
-            {/* Author Bio Box */}
-            <div className="mt-14 p-6 sm:p-8 rounded-3xl glass-panel border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row items-center gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-[#FF5E1A]/15 text-[#FF5E1A] flex items-center justify-center font-display font-black text-xl shrink-0 border border-[#FF5E1A]/30">
-                {post.author.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </div>
-              <div className="text-center sm:text-left">
-                <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">
-                  Written by {post.author.name}
-                </h4>
-                <p className="text-xs text-[#FF5E1A] font-semibold mb-2">
-                  {post.author.role}
-                </p>
-                <p className="text-xs text-slate-600 dark:text-gray-400 leading-relaxed">
-                  Passionate about translating clinical biomechanics and hyper-specific training telemetry into practical, sustainable gym routines.
-                </p>
+            {/* Bottom of Blog App Install Card (matching reference design) */}
+            <div className="mt-12 p-7 sm:p-9 rounded-3xl bg-black text-white border border-zinc-800/90 shadow-2xl relative overflow-hidden">
+              <h3 className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight leading-tight mb-3">
+                Stop losing the workouts you save
+              </h3>
+
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed max-w-xl mb-6 font-normal">
+                FreakyFit turns workout videos from TikTok, Instagram and YouTube into clear, step-by-step workouts — then helps you plan your week and track every session. Free to start, on iPhone, iPad and Android.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-md rounded-xl"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/app-store.svg"
+                    alt="Download on the App Store"
+                    className="h-10 sm:h-11 w-auto object-contain rounded-xl"
+                  />
+                </a>
+
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.freakyfit.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-md rounded-xl"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/google-play.svg"
+                    alt="Get it on Google Play"
+                    className="h-10 sm:h-11 w-auto object-contain rounded-xl"
+                  />
+                </a>
               </div>
             </div>
 
             {/* Related Articles */}
             {relatedPosts.length > 0 && (
               <div className="mt-16 pt-10 border-t border-slate-200/80 dark:border-white/10">
-                <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white mb-6">
-                  {isTurkish
-                    ? "İlgili Makaleler"
-                    : isHindi
-                    ? "संबंधित लेख"
-                    : "Related Articles"}
-                </h3>
+                <div className="flex items-center justify-between gap-4 mb-6">
+                  <h3 className="font-display font-black text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+                    {isTurkish
+                      ? "FreakyFit blogundan daha fazlası"
+                      : isHindi
+                      ? "फ्रीकीफिट ब्लॉग से और लेख"
+                      : "More from the FreakyFit blog"}
+                  </h3>
+                  <Link
+                    href={`/blog/${currentLang}`}
+                    className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-gray-400 hover:text-[#FF5E1A] dark:hover:text-[#FF5E1A] flex items-center gap-1 transition-colors shrink-0"
+                  >
+                    <span>← {isTurkish ? "Tüm makaleler" : isHindi ? "सभी लेख" : "All articles"}</span>
+                  </Link>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {relatedPosts.map((rel) => (
                     <Link
@@ -351,8 +385,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
 
             <AppInstallCard
-              headline="Turn saved videos into workouts"
-              description="Import from TikTok, Instagram and YouTube. Free to start, on iPhone, iPad and Android."
+              headline="Stop losing the workouts you save"
+              description="FreakyFit turns workout videos from TikTok, Instagram and YouTube into clear, step-by-step workouts — then helps you plan your week and track every session. Free to start, on iPhone, iPad and Android."
             />
           </aside>
         </div>

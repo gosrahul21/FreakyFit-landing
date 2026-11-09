@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
 
 export default function Footer() {
   return (
@@ -43,9 +44,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={APPSTORE_LINK}
                   className="hover:text-[#FF5E1A] transition-colors"
                 >
                   iOS App
@@ -53,7 +52,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://play.google.com/store/apps/details?id=com.freakyfit.app"
+                  href={PLAYSTORE_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#FF5E1A] transition-colors"

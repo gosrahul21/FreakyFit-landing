@@ -1,6 +1,25 @@
 import WebGLBackground from "@/components/WebGLBackground";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import FAQAccordion from "@/components/FAQAccordion";
+
+const HOME_FAQS = [
+  {
+    question: "Is FreakyFit free to use?",
+    answer:
+      "Yes, FreakyFit is free to download and start organizing your favorite workouts with all essential import features.",
+  },
+  {
+    question: "Where can I save workouts from?",
+    answer:
+      "You can import clips directly via share links from Instagram Reels, TikTok, and YouTube Shorts, or paste manual workout notes directly.",
+  },
+  {
+    question: "Does FreakyFit replace a workout or coaching app?",
+    answer:
+      "FreakyFit is designed to bridge the gap between social media inspiration and execution by giving you a clear timer and routine manager for routines you actually want to do.",
+  },
+];
 
 export default function Home() {
   const envTheme = (
@@ -381,37 +400,7 @@ export default function Home() {
               <span className="font-display font-bold text-xs uppercase tracking-widest text-[#FF5E1A]">Got Questions?</span>
               <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white mt-1">Frequently asked questions</h2>
             </div>
-            <div className="space-y-4">
-              <div className="glass-panel p-5 rounded-2xl border border-slate-200/80 dark:border-white/5">
-                <div className="flex items-center justify-between cursor-pointer">
-                  <span className="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white">Is FreakyFit free to use?</span>
-                  <span className="material-symbols-outlined text-[#FF5E1A] dark:text-brand-lime">expand_more</span>
-                </div>
-                <p className="text-xs text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">
-                  Yes, FreakyFit is free to download and start organizing your favorite workouts with all essential import features.
-                </p>
-              </div>
-
-              <div className="glass-panel p-5 rounded-2xl border border-slate-200/80 dark:border-white/5">
-                <div className="flex items-center justify-between cursor-pointer">
-                  <span className="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white">Where can I save workouts from?</span>
-                  <span className="material-symbols-outlined text-[#FF5E1A] dark:text-brand-lime">expand_more</span>
-                </div>
-                <p className="text-xs text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">
-                  You can import clips directly via share links from Instagram Reels and TikTok, or paste manual workout notes directly.
-                </p>
-              </div>
-
-              <div className="glass-panel p-5 rounded-2xl border border-slate-200/80 dark:border-white/5">
-                <div className="flex items-center justify-between cursor-pointer">
-                  <span className="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white">Does FreakyFit replace a workout or coaching app?</span>
-                  <span className="material-symbols-outlined text-[#FF5E1A] dark:text-brand-lime">expand_more</span>
-                </div>
-                <p className="text-xs text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">
-                  FreakyFit is designed to bridge the gap between social media inspiration and execution by giving you a clear timer and routine manager for routines you actually want to do.
-                </p>
-              </div>
-            </div>
+            <FAQAccordion items={HOME_FAQS} hideHeader defaultOpenIndex={0} />
           </section>
 
           <section className="mt-28 rounded-3xl p-8 sm:p-12 glass-panel border border-[#FF5E1A]/30 dark:border-[#FF5E1A]/40 shadow-[0_0_40px_rgba(255,94,26,0.12)] dark:shadow-[0_0_40px_rgba(255,94,26,0.15)] text-center relative overflow-hidden" id="download">

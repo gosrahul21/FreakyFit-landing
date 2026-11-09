@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { PLAYSTORE_LINK } from "@/constants/links";
 
 interface NavbarProps {
   currentLang?: string;
@@ -19,7 +20,7 @@ export default function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-slate-200/60 dark:border-white/5 transition-all">
+    <header className="sticky top-0 left-0 right-0 z-50 glass-panel border-b border-slate-200/60 dark:border-white/5 transition-all">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         {/* Brand Logo */}
         <Link className="flex items-center gap-3 group shrink-0" href="/">
@@ -27,7 +28,7 @@ export default function Navbar({
             <img src="/logo.svg" alt="FreakyFit Logo" className="w-full h-auto object-contain" />
           </div>
           <span className="font-display font-black text-2xl tracking-tight text-slate-900 dark:text-white">
-            Freaky<span className="text-[#FF5E1A]">Fit</span>
+            FreakyFit<span className="text-[#FF5E1A]"></span>
           </span>
         </Link>
 
@@ -75,7 +76,7 @@ export default function Navbar({
 
           <a
             className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FF5E1A] text-white font-display font-bold text-sm hover:opacity-90 transition-all transform hover:scale-[1.03] shadow-lg shadow-[#FF5E1A]/20"
-            href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
+            href={PLAYSTORE_LINK}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -138,7 +139,7 @@ export default function Navbar({
           <div className="pt-4 border-t border-slate-200/80 dark:border-white/10">
             <a
               className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#FF5E1A] text-white font-display font-bold text-sm shadow-lg shadow-[#FF5E1A]/20"
-              href="https://apps.apple.com/us/app/freakyfit-workout-organizer/id6756478119"
+              href={PLAYSTORE_LINK}
               target="_blank"
               rel="noopener noreferrer"
             >

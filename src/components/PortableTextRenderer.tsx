@@ -3,6 +3,7 @@
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import React from "react";
 import { urlFor } from "@/lib/sanity";
+import FAQAccordion from "@/components/FAQAccordion";
 
 // Helper to extract clean plain text from react children
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -236,39 +237,13 @@ const components: PortableTextComponents = {
         return null;
       }
       return (
-        <section className="my-12 rounded-3xl border border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-zinc-900/60 p-6 md:p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FF5E1A]/10 text-[#FF5E1A] font-bold text-xs uppercase tracking-wider">
-              FAQ
-            </span>
-            <h2 className="text-xl md:text-2xl font-display font-extrabold text-slate-900 dark:text-white m-0">
-              {value.title || "Frequently Asked Questions"}
-            </h2>
-          </div>
-          <div className="space-y-3">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {value.items.map((item: any, idx: number) => (
-              <details
-                key={idx}
-                className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-800/80 p-5 transition-all duration-200 hover:border-[#FF5E1A]/50"
-              >
-                <summary className="flex cursor-pointer items-center justify-between font-display font-bold text-slate-900 dark:text-white list-none text-base md:text-lg">
-                  <span className="flex items-start gap-3">
-                    <span className="text-[#FF5E1A] font-bold select-none">Q:</span>
-                    <span>{item.question}</span>
-                  </span>
-                  <span className="ml-4 shrink-0 text-slate-400 group-open:rotate-180 transition-transform duration-200">
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </span>
-                </summary>
-                <div className="mt-3 pl-7 text-sm md:text-base leading-relaxed text-slate-700 dark:text-gray-300 whitespace-pre-line border-t border-slate-100 dark:border-zinc-700/60 pt-3">
-                  {item.answer}
-                </div>
-              </details>
-            ))}
-          </div>
+        <section className="my-10">
+          <FAQAccordion
+            title={value.title || "Frequently asked questions"}
+            badge="FAQ"
+            items={value.items}
+            defaultOpenIndex={0}
+          />
         </section>
       );
     },
@@ -349,6 +324,105 @@ const components: PortableTextComponents = {
   },
 };
 
+interface BlockChild {
+  _type?: string;
+  text?: string;
+}
+
+interface PortableBlock {
+  _type?: string;
+  _key?: string;
+  style?: string;
+  children?: BlockChild[];
+  [key: string]: unknown;
+}
+
+// Preprocess PortableText blocks: automatically bundle h2 (FAQ) followed by h3/h4 questions into a structured 'faq' block
+function preprocessPortableTextBlocks(blocks: PortableBlock[]): PortableBlock[] {
+  if (!Array.isArray(blocks) || blocks.length === 0) return blocks;
+
+  const result: PortableBlock[] = [];
+  let i = 0;
+
+  while (i < blocks.length) {
+    const block = blocks[i];
+    const isBlockH2 = block._type === "block" && block.style === "h2";
+    const text = block.children?.map((c) => c.text || "").join("").trim() || "";
+    const isFAQHeading =
+      isBlockH2 &&
+      /frequently asked questions|faq|अक्सर पूछे जाने वाले सवाल|sıkça sorulan sorular|preguntas frecuentes|questions fréquentes|häufig gestellte fragen/i.test(
+        text
+      );
+
+    if (isFAQHeading) {
+      const faqTitle = text;
+      const faqItems: { question: string; answer: string }[] = [];
+      i++; // skip the h2 heading block
+
+      let currentQuestion = "";
+      let currentAnswerBlocks: PortableBlock[] = [];
+
+      const flushCurrentItem = () => {
+        if (currentQuestion) {
+          const answerText = currentAnswerBlocks
+            .map((b) => b.children?.map((c) => c.text || "").join("") || "")
+            .filter(Boolean)
+            .join("\n\n");
+          faqItems.push({
+            question: currentQuestion,
+            answer: answerText || "",
+          });
+        }
+        currentQuestion = "";
+        currentAnswerBlocks = [];
+      };
+
+      while (i < blocks.length) {
+        const nextBlock = blocks[i];
+        const nextText =
+          nextBlock.children?.map((c) => c.text || "").join("").trim() || "";
+
+        // Stop if we encounter another major heading (h2) or a horizontal divider
+        if (
+          nextBlock._type === "block" &&
+          (nextBlock.style === "h2" || nextText === "---")
+        ) {
+          if (nextText === "---") i++; // consume divider
+          break;
+        }
+
+        if (
+          nextBlock._type === "block" &&
+          (nextBlock.style === "h3" || nextBlock.style === "h4")
+        ) {
+          flushCurrentItem();
+          currentQuestion = nextText;
+        } else {
+          currentAnswerBlocks.push(nextBlock);
+        }
+        i++;
+      }
+
+      flushCurrentItem();
+
+      if (faqItems.length > 0) {
+        result.push({
+          _type: "faq",
+          _key: block._key || `faq-${i}`,
+          title: faqTitle,
+          items: faqItems,
+        });
+      }
+      continue;
+    }
+
+    result.push(block);
+    i++;
+  }
+
+  return result;
+}
+
 interface PortableTextRendererProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any;
@@ -360,9 +434,10 @@ export default function PortableTextRenderer({
   rawContent,
 }: PortableTextRendererProps) {
   if (value && Array.isArray(value) && value.length > 0) {
+    const processedValue = preprocessPortableTextBlocks(value);
     return (
       <div className="prose-content">
-        <PortableText value={value} components={components} />
+        <PortableText value={processedValue} components={components} />
       </div>
     );
   }
@@ -403,11 +478,62 @@ export default function PortableTextRenderer({
       isOrderedList = false;
     };
 
-    lines.forEach((line, index) => {
+    let index = 0;
+    while (index < lines.length) {
+      const line = lines[index];
       const trimmed = line.trim();
       if (!trimmed) {
         flushList();
-        return;
+        index++;
+        continue;
+      }
+
+      // Check if entering an FAQ markdown block
+      if (
+        trimmed.startsWith("## ") &&
+        /frequently asked questions|faq|अक्सर पूछे जाने वाले सवाल|sıkça sorulan sorular/i.test(
+          trimmed
+        )
+      ) {
+        flushList();
+        const faqTitle = trimmed.replace("## ", "").trim();
+        const faqItems: { question: string; answer: string }[] = [];
+        let currQ = "";
+        let currA: string[] = [];
+
+        const flushFaqItem = () => {
+          if (currQ) {
+            faqItems.push({
+              question: currQ,
+              answer: currA.join("\n\n"),
+            });
+          }
+          currQ = "";
+          currA = [];
+        };
+
+        index++;
+        while (index < lines.length) {
+          const l = lines[index].trim();
+          if (l.startsWith("## ") || l === "---") break;
+          if (l.startsWith("### ")) {
+            flushFaqItem();
+            currQ = l.replace("### ", "").trim();
+          } else if (l) {
+            currA.push(l);
+          }
+          index++;
+        }
+        flushFaqItem();
+
+        if (faqItems.length > 0) {
+          elements.push(
+            <div key={`faq-${index}`} className="my-10">
+              <FAQAccordion title={faqTitle} items={faqItems} defaultOpenIndex={0} />
+            </div>
+          );
+        }
+        continue;
       }
 
       if (trimmed.startsWith("### ")) {
@@ -462,7 +588,8 @@ export default function PortableTextRenderer({
           </p>
         );
       }
-    });
+      index++;
+    }
 
     flushList();
 
