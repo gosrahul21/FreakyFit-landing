@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FAQAccordion from "@/components/FAQAccordion";
 import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
+import { SITE_NAME, SITE_URL } from "@/constants/site";
 
 const HOME_FAQS = [
   {
@@ -30,9 +31,22 @@ export default function Home() {
     "light"
   ).toLowerCase();
   const defaultTheme = envTheme === "light" ? "light" : "dark";
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    alternateName: ["freakyfit", "freakyfit.xyz"],
+    url: `${SITE_URL}/`,
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Navbar defaultTheme={defaultTheme} />
 
       <main className="relative pt-28 lg:pt-36 pb-24 overflow-hidden">

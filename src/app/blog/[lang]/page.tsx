@@ -7,6 +7,7 @@ import AppInstallCard from "@/components/AppInstallCard";
 import MobileAppInstallPopup from "@/components/MobileAppInstallPopup";
 import { getBlogPosts } from "@/lib/sanity";
 import { Language } from "@/constants/lang.enum";
+import { SITE_URL } from "@/constants/site";
 
 interface BlogIndexProps {
   params: Promise<{
@@ -47,11 +48,11 @@ export async function generateMetadata({
       ? "फिटनेस रील्स को वास्तविक वर्कआउट में बदलें, व्यायाम विज्ञान और हाइपरट्रॉफी तकनीकों को समझें।"
       : "Evidence-based fitness guides, hypertrophy biomechanics, and guides on transforming social media workout reels into structured routines.",
     alternates: {
-      canonical: `https://freakyfit.truemindlabs.com/blog/${lang}`,
+      canonical: `${SITE_URL}/blog/${lang}`,
       languages: Object.fromEntries(
         Object.values(Language).map((l) => [
           l,
-          `https://freakyfit.truemindlabs.com/blog/${l}`,
+          `${SITE_URL}/blog/${l}`,
         ])
       ),
     },

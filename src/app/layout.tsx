@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { SITE_NAME, SITE_URL } from "@/constants/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://freakyfit.truemindlabs.com"),
-  title: "FreakyFit - Turn Workout Reels into Real Routines",
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  title: "FreakyFit - Hit the Gym with your saved workout",
   description: "Stop using messy saved folders, FreakyFit helps you organize workouts into clean routines.",
   alternates: {
-    canonical: "https://freakyfit.truemindlabs.com",
+    canonical: SITE_URL,
   },
   icons: {
     icon: [
@@ -18,10 +20,10 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "FreakyFit - Turn Workout Reels into Real Routines",
+    title: "FreakyFit - Hit the Gym with your saved workout",
     description: "Stop using messy saved folders, FreakyFit helps you organize workouts into clean routines.",
-    url: "https://freakyfit.truemindlabs.com",
-    siteName: "FreakyFit",
+    url: SITE_URL,
+    siteName: SITE_NAME,
     type: "website",
   },
 };

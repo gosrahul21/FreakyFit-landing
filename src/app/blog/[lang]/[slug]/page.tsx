@@ -11,6 +11,7 @@ import MobileAppInstallPopup from "@/components/MobileAppInstallPopup";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/sanity";
 import { Language } from "@/constants/lang.enum";
 import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
+import { SITE_NAME, SITE_URL } from "@/constants/site";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -48,19 +49,19 @@ export async function generateMetadata({
     title: `${post.title} - FreakyFit`,
     description: post.excerpt,
     alternates: {
-      canonical: `https://freakyfit.truemindlabs.com/blog/${currentLang}/${post.slug}`,
+      canonical: `${SITE_URL}/blog/${currentLang}/${post.slug}`,
       languages: Object.fromEntries(
         Object.values(Language).map((l) => [
           l,
-          `https://freakyfit.truemindlabs.com/blog/${l}/${post.slug}`,
+          `${SITE_URL}/blog/${l}/${post.slug}`,
         ])
       ),
     },
     openGraph: {
       title: post.title,
       description: post.excerpt,
-      url: `https://freakyfit.truemindlabs.com/blog/${currentLang}/${post.slug}`,
-      siteName: "FreakyFit",
+      url: `${SITE_URL}/blog/${currentLang}/${post.slug}`,
+      siteName: SITE_NAME,
       type: "article",
       publishedTime: post.publishedAt,
       authors: [post.author.name],
