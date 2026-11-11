@@ -7,9 +7,6 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   title: "FreakyFit - Hit the Gym with your saved workout",
   description: "Stop using messy saved folders, FreakyFit helps you organize workouts into clean routines.",
-  alternates: {
-    canonical: SITE_URL,
-  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },

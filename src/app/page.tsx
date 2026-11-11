@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import WebGLBackground from "@/components/WebGLBackground";
 import Navbar from "@/components/Navbar";
@@ -5,6 +6,12 @@ import Footer from "@/components/Footer";
 import FAQAccordion from "@/components/FAQAccordion";
 import { APPSTORE_LINK, PLAYSTORE_LINK } from "@/constants/links";
 import { SITE_NAME, SITE_URL } from "@/constants/site";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: `${SITE_URL}/`,
+  },
+};
 
 const HOME_FAQS = [
   {
@@ -35,7 +42,6 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
-    alternateName: ["freakyfit", "freakyfit.xyz"],
     url: `${SITE_URL}/`,
   };
 
