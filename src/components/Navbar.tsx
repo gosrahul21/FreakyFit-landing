@@ -40,12 +40,12 @@ export default function Navbar({
           >
             How It Works
           </Link>
-          <Link
+          {/* <Link
             className="text-sm font-medium text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             href="/#interactive-preview"
           >
             Interactive Demo
-          </Link>
+          </Link> */}
           <Link
             className="text-sm font-medium text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             href="/#features"
@@ -108,13 +108,13 @@ export default function Navbar({
           >
             How It Works
           </Link>
-          <Link
+          {/* <Link
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-medium text-slate-700 dark:text-gray-300 hover:text-[#FF5E1A]"
             href="/#interactive-preview"
           >
             Interactive Demo
-          </Link>
+          </Link> */}
           <Link
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-medium text-slate-700 dark:text-gray-300 hover:text-[#FF5E1A]"
